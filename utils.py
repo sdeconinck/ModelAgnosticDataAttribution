@@ -1,5 +1,5 @@
 import torch
-
+import numpy as np
 
 def xy_location_to_num(input_size, crop_size, in_x, in_y,out_n_regions):
     out_n_regions = np.sqrt(out_n_regions)

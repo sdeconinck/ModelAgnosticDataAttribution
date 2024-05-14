@@ -36,17 +36,17 @@ np.random.seed(args.seed)
 
 
 transforms = T.Compose([
-    T.ToTensor(),
     T.Resize((128, 128), antialias=True),
     T.ConvertImageDtype(torch.float32),
     T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
 if args.partition == 'custom':
-    subset_inidices, _ = get_subset_celeba_attr(
+    subset_indices, _ = get_subset_celeba_attr(
         'data/celeba/list_attr_celeba.csv', 'data/celeba/list_eval_partition.csv', target_attribute=args.attribute, hidden_attribute=args.extra_attribute)
     dataset = CelebDataset(target=args.attribute,
-                           transforms=transforms, partition=1, extra_attribute=args.extra_attribute)
+                           transforms=transforms, partition=0)
+    dataset = torch.utils.data.Subset(dataset, subset_indices)
 else:
     mapping = {'train': 0, 'val': 1, 'test': 2}
     dataset = CelebDataset(target=args.attribute,
