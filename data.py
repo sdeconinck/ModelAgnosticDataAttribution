@@ -8,6 +8,42 @@ import pandas as pd
 import numpy as np
 import math
 
+def get_subset_celeba_attr(data_file, partition_file, target_attribute='Male', hidden_attribute='Wearing_Earrings', num_validation_per_class=182):
+    # load in the dataset
+    attributes = pd.read_csv(data_file)
+
+    # create a smaller subset to do our experiment, with an induced imbalance
+    partitions = pd.read_csv(partition_file)
+    attributes_train = attributes[partitions.partition == 0]
+    attributes_train = attributes_train[attributes_train.image_id != '090516.jpg']
+    attributes_train = attributes_train.reset_index()
+
+    # train set of 6000 images
+    target_pos_attr_pos = attributes_train[(attributes_train[target_attribute] == 1) & (
+        attributes_train[hidden_attribute] == 1)].sample(0).index.values
+    target_pos_attr_neg = attributes_train[(attributes_train[target_attribute] == 1) & (
+        attributes_train[hidden_attribute] == -1)].sample(3000).index.values
+    target_neg_attr_pos = attributes_train[(attributes_train[target_attribute] == -1) & (
+        attributes_train[hidden_attribute] == 1)].sample(2000).index.values
+    target_neg_attr_neg = attributes_train[(attributes_train[target_attribute] == -1) & (
+        attributes_train[hidden_attribute] == -1)].sample(1000).index.values
+    indexes = np.concatenate(
+        [target_pos_attr_pos, target_pos_attr_neg, target_neg_attr_pos, target_neg_attr_neg])
+
+    # validation set
+    attributes_val = attributes[partitions.partition == 1]
+    attributes_val = attributes_val[attributes_val.image_id != '090516.jpg']
+    attributes_val = attributes_val.reset_index()
+
+    # fully balanced, 400 images 100 men 100 women with and without earrings 50/50
+    targ_pos_attr_pos = attributes_val[attributes_val[target_attribute] == 1].groupby(
+        hidden_attribute).sample(num_validation_per_class).index.values
+    targ_neg_attr_pos = attributes_val[attributes_val[target_attribute] == -1].groupby(
+        hidden_attribute).sample(num_validation_per_class).index.values
+    indexes_val = np.concatenate([targ_pos_attr_pos, targ_neg_attr_pos])
+
+    return indexes, indexes_val
+
 
 class CelebDataset(Dataset):
     def __init__(self, target='all', img_folder: str = 'data/celeba/img_align_celeba/',
