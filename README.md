@@ -1,2 +1,22 @@
 # ModelAgnosticDataAttribution
-Source code for the 'Mitigating Bias Using Model-Agnostic Data Attribution' paper
+
+Source code for the 'Mitigating Bias Using Model-Agnostic Data Attribution' paper, accepted to 2024 IEEE CVPR WORKSHOP ON FAIR, DATA-EFFICIENT, AND TRUSTED COMPUTER VISION
+
+## Installation
+
+Install all necessary packages through `pip install -r requirements.txt`
+
+## Data Setup
+
+CelebA dataset can be downloaded from [here](https://mmlab.ie.cuhk.edu.hk/projects/CelebA.html). Place under `data/celeba`.
+
+## Training a region classifier
+
+To train a model for region classification use the following command:
+
+```
+python3 train.py --attribute Blond_Hair --n_regions 2401 --save_path models/model_blond_hair.pt
+```
+
+## Using data attributions to train unbiased classifiers
+
