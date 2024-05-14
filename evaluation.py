@@ -5,7 +5,7 @@ from torchmetrics.functional.classification import multiclass_calibration_error
 
 def margin_topk_accuracy(predictions, labels, k=10):
     # get the predcitions with the highest probabilities
-    values, indices = torch.topk(torch.nn.functional.softmax(predictions),k=2, dim=1)
+    values, indices = torch.topk(torch.nn.functional.softmax(predictions, dim=1),k=2, dim=1)
 
     # get difference of first and second
     values = values[:,0] - values[:,1] 
@@ -20,7 +20,7 @@ def topk_accuracy(predictions, labels, k=10):
 
 
     # get the predcitions with the highest probabilities
-    values, indices = torch.max(torch.nn.functional.softmax(predictions), dim=1) 
+    values, indices = torch.max(torch.nn.functional.softmax(predictions, dim=1), dim=1) 
     values, idx= torch.topk(values,k)
 
     acc = torch.sum(indices[idx].cpu() == labels.cpu()[idx.cpu()]) / k

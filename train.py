@@ -27,12 +27,12 @@ if __name__ == "__main__":
     parser.add_argument("--batch_size", type=int, default=256)
     parser.add_argument("--lr", type=float, default=0.001)
     parser.add_argument("--crop_size", type=int, default=32)
-    parser.add_argument("--num_workers", type=int, default=4)
+    parser.add_argument("--num_workers", type=int, default=2)
     parser.add_argument("--optimizer", type=str, default="adamw")
     parser.add_argument("--step_size_scheduler", type=int, default=40)
     parser.add_argument("--n_regions", type=int, default=2401, help='number of regions to divide the image in, should be a square number')
     parser.add_argument("--attribute", type=str, default="Blond_Hair", help='the attribute for which to train the model')
-    parser.add_argument("--num_classes", type=int, default=4, help='number of classes for the attribute')
+    parser.add_argument("--num_classes", type=int, default=2, help='number of classes for the attribute')
     parser.add_argument("--wandb_project", type=str, default="region_classification", help='wandb project name')
     parser.add_argument("--wandb_entity", type=str, default="sanderdc", help='wandb entity name')
     parser.add_argument("--save_path", type=str, default=f"models/model_{ts}.pt")
@@ -44,12 +44,11 @@ if __name__ == "__main__":
 
 
     transforms = T.Compose([
-        T.ToTensor(),
+        #T.ToTensor(),
         T.Resize(128, antialias=True),
         T.ConvertImageDtype(torch.float32),
         T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-        RandomCropWithFixedCoordinates(128,
-                                       args.crop_size, args.n_regions) if args.region else T.RandomCrop(args.crop_size),
+        RandomCropWithFixedCoordinates(128, args.crop_size, args.n_regions),
     ])
 
     dataset = CelebDataset(target=args.attribute, transforms=transforms)
@@ -58,8 +57,7 @@ if __name__ == "__main__":
     train_loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers)
     val_loader = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers)
 
-    model = ResNet18(num_classes=args.num_classes, region=args.region,
-                     n_regions=args.n_regions)
+    model = ResNet18(num_classes=args.num_classes, n_regions=args.n_regions)
     criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
 
     if args.optimizer == "adam":

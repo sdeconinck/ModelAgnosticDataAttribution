@@ -60,7 +60,7 @@ class CelebDataset(Dataset):
 
         if type(img) == tuple:  # with coordinates
             # return image[0], image[1], image[2], torch.tensor(label, dtype=torch.int64)
-            return img[0].squeeze(), img[1], torch.tensor(target, dtype=torch.int64)
+            return img[0].squeeze(), img[1], target
 
         if self.return_map:
             return img.squeeze(), idx, target.to(torch.float32)
