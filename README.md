@@ -23,3 +23,6 @@ To train a model for region classification use the following command:
 ```
 python3 attribute_data.py --model_path "models/model_blond_hair.pt" --partition val --save_path attributions/blond_hair_val.pt
 ```
+
+## Training a robust classifier using the region attributions
+

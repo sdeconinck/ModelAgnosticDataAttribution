@@ -118,3 +118,42 @@ class ResNet(nn.Module):
 
 def ResNet18(num_classes=10, region=True, n_regions=16):
     return ResNet(BasicBlock, [2, 2, 2, 2], num_classes=num_classes, region=region, n_regions=n_regions)
+
+class AttributeClassifier(nn.Module):
+
+    def __init__(self, num_classes: int = 1):
+        super(AttributeClassifier, self).__init__()
+        self.num_classes = num_classes
+        self.cnn = nn.Sequential(
+            nn.Conv2d(in_channels=3, out_channels=6, kernel_size=5,
+                      padding="same"),  # in = 224*184
+            nn.Dropout(0.1),
+            nn.BatchNorm2d(6),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.LeakyReLU(0.1),
+            nn.Conv2d(in_channels=6, out_channels=12,
+                      kernel_size=5, padding="same"),
+            nn.Dropout(0.1),
+            nn.BatchNorm2d(12),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.LeakyReLU(0.1),
+            nn.Conv2d(in_channels=12, out_channels=24,
+                      kernel_size=5, padding="same"),
+            nn.Dropout(0.1),
+            nn.BatchNorm2d(24),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.LeakyReLU(0.1),
+            # reduce more
+
+            nn.Flatten(),  # 32 * 56 * 46
+            nn.Linear(6144, 1000),
+            nn.Dropout(0.5),
+            nn.LeakyReLU(0.1),
+            nn.Linear(1000, 100),
+            nn.Dropout(0.5),
+            nn.LeakyReLU(0.1),
+            nn.Linear(100, self.num_classes),
+        )
+
+    def forward(self, x):
+        return self.cnn(x)

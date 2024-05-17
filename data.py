@@ -98,7 +98,7 @@ class CelebDataset(Dataset):
             # return image[0], image[1], image[2], torch.tensor(label, dtype=torch.int64)
             return img[0].squeeze(), img[1], target
 
-        if self.return_map:
+        if self.return_map: # return the image, the index and the target so it can be used to find the corresponding attribution map
             return img.squeeze(), idx, target.to(torch.float32)
         return img.squeeze(), target.to(torch.float32)
 
