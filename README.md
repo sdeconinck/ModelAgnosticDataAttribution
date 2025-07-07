@@ -2,6 +2,7 @@
 
 Source code for the 'Mitigating Bias Using Model-Agnostic Data Attribution' paper, accepted to 2024 IEEE CVPR WORKSHOP ON FAIR, DATA-EFFICIENT, AND TRUSTED COMPUTER VISION
 
+https://openaccess.thecvf.com/content/CVPR2024W/TCV2024/html/De_Coninck_Mitigating_Bias_Using_Model-Agnostic_Data_Attribution_CVPRW_2024_paper.html 
 ## Installation
 
 Install all necessary packages through `pip install -r requirements.txt`
