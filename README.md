@@ -26,3 +26,4 @@ python3 attribute_data.py --model_path "models/model_blond_hair.pt" --partition 
 
 ## Training a robust classifier using the region attributions
 
+Use robustness_experiment.py to examine the difference between models trained with or without region attribution-based noise.
